@@ -2,7 +2,7 @@ package rethinkgo
 
 import (
 	"encoding/json"
-	p "github.com/christopherhesse/rethinkgo/ql2"
+	p "github.com/dancannon/rethinkgo/ql2"
 	"strconv"
 	"strings"
 	"time"

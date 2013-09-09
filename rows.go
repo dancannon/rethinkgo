@@ -4,8 +4,8 @@ import (
 	"code.google.com/p/goprotobuf/proto"
 	"errors"
 	"fmt"
+	p "github.com/dancannon/rethinkgo/ql2"
 	"reflect"
-	p "github.com/christopherhesse/rethinkgo/ql2"
 )
 
 // Rows is an iterator to move through the rows returned by the database, call
