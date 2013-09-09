@@ -695,14 +695,25 @@ var testGroups = map[string][]ExpectPair{
 }
 
 func (s *RethinkSuite) TestGroups(c *test.C) {
-	for group, pairs := range testGroups {
-		resetDatabase(c)
+	resetDatabase(c)
 
+	for group, pairs := range testGroups {
 		for index, pair := range pairs {
 			if testing.Verbose() {
 				fmt.Println("Group:", group, index)
 			}
 			runQuery(c, pair)
+		}
+
+		// Only rebuild the database after certain tests
+		if group == "delete" ||
+			group == "nonatomic" ||
+			group == "det" ||
+			group == "pointreplace" ||
+			group == "replace" ||
+			group == "pointupdate" ||
+			group == "update" {
+			resetDatabase(c)
 		}
 	}
 }
