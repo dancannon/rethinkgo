@@ -5,8 +5,10 @@ package rethinkgo
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	test "launchpad.net/gocheck"
+	"os"
 	"testing"
 )
 
@@ -40,6 +42,7 @@ var docs = []Map{
 	Map{"id": 9},
 }
 var session *Session
+var debug = flag.Bool("test.debug", false, "debug: print query trees")
 
 // Hook up gocheck into the gotest runner.
 func Test(t *testing.T) { test.TestingT(t) }
@@ -47,9 +50,20 @@ func Test(t *testing.T) { test.TestingT(t) }
 type RethinkSuite struct{}
 
 func (s *RethinkSuite) SetUpSuite(c *test.C) {
-	// SetDebug(true)
+	// If the test is being run by wercker look for the rethink url
+	url := os.Getenv("WERCKER_RETHINKDB_URL")
+	if url == "" {
+		url = "localhost:28015"
+	}
+
+	db := os.Getenv("WERCKER_RETHINKDB_DB")
+	if db == "" {
+		db = "test"
+	}
+
+	SetDebug(*debug)
 	var err error
-	session, err = Connect("localhost:28015", "test")
+	session, err = Connect(url, db)
 	c.Assert(err, test.IsNil)
 }
 
@@ -162,10 +176,16 @@ type MatchMap map[string]interface{}
 type ErrorResponse struct{}
 
 func runQuery(c *test.C, pair ExpectPair) {
-	fmt.Println("query:", pair.query)
+	if testing.Verbose() {
+		fmt.Println("query:", pair.query)
+	}
+
 	var result interface{}
 	err := pair.query.Run(session).One(&result)
-	fmt.Printf("result: %v %T %v\n", result, result, err)
+
+	if testing.Verbose() {
+		fmt.Printf("result: %v %T %v\n", result, result, err)
+	}
 	_, ok := pair.expected.(ErrorResponse)
 	if ok {
 		c.Assert(err, test.NotNil)
@@ -187,7 +207,10 @@ func runQuery(c *test.C, pair ExpectPair) {
 		// just convert to a []byte with json, then compare the bytes
 		v1, _ := json.Marshal(result)
 		v2, _ := json.Marshal(pair.expected)
-		fmt.Println("out:", string(v1), string(v2))
+
+		if testing.Verbose() {
+			fmt.Println("out:", string(v1), string(v2))
+		}
 		c.Assert(result, JsonEquals, pair.expected)
 	case MatchMap:
 		// In some cases we want to match against a map, but only against those keys
@@ -676,7 +699,9 @@ func (s *RethinkSuite) TestGroups(c *test.C) {
 		resetDatabase(c)
 
 		for index, pair := range pairs {
-			fmt.Println("Group:", group, index)
+			if testing.Verbose() {
+				fmt.Println("Group:", group, index)
+			}
 			runQuery(c, pair)
 		}
 	}
