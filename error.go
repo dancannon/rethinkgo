@@ -2,7 +2,7 @@ package rethinkgo
 
 import (
 	"fmt"
-	p "github.com/dancannon/rethinkgo/ql2"
+	p "github.com/christopherhesse/rethinkgo/ql2"
 )
 
 func formatError(message string, response *p.Response) string {

@@ -4,7 +4,7 @@ import (
 	"code.google.com/p/goprotobuf/proto"
 	"errors"
 	"fmt"
-	p "github.com/dancannon/rethinkgo/ql2"
+	p "github.com/christopherhesse/rethinkgo/ql2"
 	"reflect"
 )
 

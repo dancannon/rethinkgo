@@ -6,7 +6,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	p "github.com/dancannon/rethinkgo/ql2"
+	p "github.com/christopherhesse/rethinkgo/ql2"
 	"io"
 	"net"
 	"time"

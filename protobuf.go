@@ -7,7 +7,7 @@ package rethinkgo
 import (
 	"code.google.com/p/goprotobuf/proto"
 	"fmt"
-	p "github.com/dancannon/rethinkgo/ql2"
+	p "github.com/christopherhesse/rethinkgo/ql2"
 	"reflect"
 	"runtime"
 	"sync/atomic"
